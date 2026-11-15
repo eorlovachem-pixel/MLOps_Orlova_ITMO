@@ -1,0 +1,44 @@
+# Пайплайн воспроизводит обучение; исходный CSV отслеживается через data/raw.csv.dvc.
+stages:
+  prepare:
+    cmd: >-
+      uv run python -m mlops_demo.pipeline prepare
+      --input data/raw.csv --output data/processed.json
+      --test-ratio ${data.test_ratio} --seed ${data.seed}
+    deps:
+      - data/raw.csv
+      - mlops_demo/data.py
+      - mlops_demo/features.py
+      - mlops_demo/pipeline.py
+    params:
+      - data.seed
+      - data.test_ratio
+    outs:
+      - data/processed.json
+  train:
+    cmd: >-
+      uv run python -m mlops_demo.pipeline train
+      --input data/processed.json --output models/model.json
+      --epochs ${train.epochs} --lr ${train.learning_rate}
+    deps:
+      - data/processed.json
+      - mlops_demo/model.py
+      - mlops_demo/training.py
+      - mlops_demo/pipeline.py
+    params:
+      - train.epochs
+      - train.learning_rate
+    outs:
+      - models/model.json
+  evaluate:
+    cmd: >-
+      uv run python -m mlops_demo.pipeline evaluate
+      --input data/processed.json --model models/model.json
+      --output reports/metrics.json
+    deps:
+      - data/processed.json
+      - models/model.json
+      - mlops_demo/pipeline.py
+    metrics:
+      - reports/metrics.json:
+          cache: true

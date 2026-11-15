@@ -1,0 +1,81 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: uv run python -m mlops_demo.pipeline prepare --input data/raw.csv --output
+      data/processed.json --test-ratio 0.25 --seed 2026
+    deps:
+    - path: data/raw.csv
+      hash: md5
+      md5: 8314b78296b4718ff99181d2a4e76e4e
+      size: 2639
+    - path: mlops_demo/data.py
+      hash: md5
+      md5: 0ce3f9127483484ac1eebd5056343264
+      size: 2374
+    - path: mlops_demo/features.py
+      hash: md5
+      md5: 749463924021144f4d109875241d8504
+      size: 1295
+    - path: mlops_demo/pipeline.py
+      hash: md5
+      md5: 7bc2ddeb2621e7fb2bd5611596d8a97e
+      size: 5017
+    params:
+      params.yaml:
+        data.seed: 2026
+        data.test_ratio: 0.25
+    outs:
+    - path: data/processed.json
+      hash: md5
+      md5: 9ff9bff4758734ef18c7a14523d1145a
+      size: 11623
+  train:
+    cmd: uv run python -m mlops_demo.pipeline train --input data/processed.json --output
+      models/model.json --epochs 250 --lr 0.25
+    deps:
+    - path: data/processed.json
+      hash: md5
+      md5: 9ff9bff4758734ef18c7a14523d1145a
+      size: 11623
+    - path: mlops_demo/model.py
+      hash: md5
+      md5: ce721b242a0d8c3744a36b0106522887
+      size: 1364
+    - path: mlops_demo/pipeline.py
+      hash: md5
+      md5: 7bc2ddeb2621e7fb2bd5611596d8a97e
+      size: 5017
+    - path: mlops_demo/training.py
+      hash: md5
+      md5: fd54b52f7b8ae940a73b4d69aff3ca3f
+      size: 1201
+    params:
+      params.yaml:
+        train.epochs: 250
+        train.learning_rate: 0.25
+    outs:
+    - path: models/model.json
+      hash: md5
+      md5: 80b897ac33cedce89b7402cf26a5a90a
+      size: 357
+  evaluate:
+    cmd: uv run python -m mlops_demo.pipeline evaluate --input data/processed.json
+      --model models/model.json --output reports/metrics.json
+    deps:
+    - path: data/processed.json
+      hash: md5
+      md5: 9ff9bff4758734ef18c7a14523d1145a
+      size: 11623
+    - path: mlops_demo/pipeline.py
+      hash: md5
+      md5: 7bc2ddeb2621e7fb2bd5611596d8a97e
+      size: 5017
+    - path: models/model.json
+      hash: md5
+      md5: 80b897ac33cedce89b7402cf26a5a90a
+      size: 357
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: a8e9f8619ac78cb7b83dda21f077e7f6
+      size: 133

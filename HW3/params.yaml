@@ -1,0 +1,6 @@
+data:
+  seed: 2026
+  test_ratio: 0.25
+train:
+  epochs: 250
+  learning_rate: 0.25

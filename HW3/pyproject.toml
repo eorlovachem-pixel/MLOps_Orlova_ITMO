@@ -1,0 +1,38 @@
+[project]
+name = "itmo-mlops-basics-homeworks"
+version = "0.1.0"
+description = "Учебный воспроизводимый ML-пайплайн для ДЗ ИТМО: uv, Git, DVC, тесты"
+requires-python = ">=3.12,<3.15"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<10",
+  "ruff>=0.13,<0.19",
+  "ty>=0.0.50,<0.1",
+  "dvc>=3.55,<4",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+markers = [
+  "unit: быстрое изолированное тестирование блока, модели, загрузчика, обучения",
+  "integration: проверка взаимодействия нескольких компонентов",
+  "e2e: запуск целого пайплайна через CLI",
+  "dvc: воспроизведение DVC end-to-end при наличии DVC CLI",
+]
+
+[tool.ty.environment]
+python-version = "3.13"

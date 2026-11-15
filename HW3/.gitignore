@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.ty_cache/
+*.py[cod]
+.coverage
+.env
+.env.*
+!.env.example
+# DVC создаёт игнорирование raw, processed, models, reports в отдельных .gitignore.
+# Local remote должен оставаться вне Git-репозитория.

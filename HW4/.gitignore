@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.ty_cache/
+*.py[cod]
+.DS_Store
+# Generated outputs are intentionally not versioned for the HW4 testing exercise.
+data/processed.json
+models/
+reports/

@@ -1,0 +1,39 @@
+name: MLOps homework checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [HW1, HW4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install dependencies
+        working-directory: ${{ matrix.folder }}
+        run: uv sync
+      - name: Lint, format and types
+        working-directory: ${{ matrix.folder }}
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run ty check
+      - name: Run tests
+        working-directory: ${{ matrix.folder }}
+        run: uv run pytest -q
+
+  git-workflow-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Unit tests for HW2
+        working-directory: HW2
+        run: python -m unittest discover -s tests -v
